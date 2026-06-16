@@ -1,6 +1,6 @@
 """KPortWatch daemon package — thin orchestrator and decoupled components."""
 
-__all__ = ["DaemonController"]
+__all__ = ["DaemonController"]  # pyright: ignore[reportUnsupportedDunderAll]
 
 
 def __getattr__(name: str):

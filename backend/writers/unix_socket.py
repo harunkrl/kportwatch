@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import socket
+import struct
 import threading
 from collections.abc import Callable
 
@@ -102,8 +103,6 @@ class UnixSocketServer:
         Returns None if SO_PEERCRED is not available (non-Linux).
         """
         try:
-            import struct
-
             # SO_PEERCRED = 17 on Linux, data = struct_ucred { pid, uid, gid }
             cred = client.getsockopt(socket.SOL_SOCKET, 17, struct.calcsize("3i"))
             pid, uid, _gid = struct.unpack("3i", cred)

@@ -95,7 +95,7 @@ class DataCollector:
         Calls clear_cycle_caches() at the start of each cycle to ensure
         net_connections() is refreshed every tick regardless of poll_interval.
         """
-        if _HAS_PSUTIL:
+        if _psutil_clear_cycle_caches is not None:
             _psutil_clear_cycle_caches()
         entries, inode_map = self._collect_entries()
         process_tree = self._build_tree(inode_map)
@@ -114,7 +114,7 @@ class DataCollector:
     def _collect_entries(self) -> tuple[list, dict | None]:
         """Collect socket entries. Returns (entries, inode_map_or_None)."""
         inode_map = None
-        if _HAS_PSUTIL:
+        if _psutil_connections is not None:
             entries = _psutil_connections()
             logger.debug("Collected %d socket entries via psutil", len(entries))
         else:
@@ -142,7 +142,7 @@ class DataCollector:
 
     def _build_tree(self, inode_map: dict | None) -> dict:
         """Build process tree (uses cached process_iter internally)."""
-        if _HAS_PSUTIL:
+        if _psutil_network_pids is not None and _psutil_process_tree is not None:
             network_pids = _psutil_network_pids()
             return _psutil_process_tree(network_pids)
         if inode_map is None:
@@ -179,7 +179,7 @@ class DataCollector:
     def _collect_traffic(self) -> dict[str, InterfaceStats]:
         """Collect interface stats with rate computation."""
         now_ts = time.time()
-        raw = _psutil_traffic() if _HAS_PSUTIL else parse_proc_net_dev()
+        raw = _psutil_traffic() if _psutil_traffic is not None else parse_proc_net_dev()
         traffic: dict[str, InterfaceStats] = {}
         for stats in raw:
             if stats.interface in self._prev_traffic:

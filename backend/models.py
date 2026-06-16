@@ -114,7 +114,7 @@ class Snapshot:
     listening: list[SocketEntry] = field(default_factory=list)
     established: list[SocketEntry] = field(default_factory=list)
     alerts: list[Alert] = field(default_factory=list)
-    summary: dict[str, int] = field(
+    summary: dict[str, int | dict[str, Any]] = field(
         default_factory=lambda: {
             "total_listening": 0,
             "total_established": 0,

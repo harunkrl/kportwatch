@@ -28,6 +28,7 @@ from __future__ import annotations
 import json
 import os
 from datetime import datetime
+from typing import IO
 
 from shared.constants import BASELINE_DIR
 
@@ -47,7 +48,7 @@ class HistoryRecorder:
         self.retention_days = retention_days
         self._current_file: str | None = None
         self._current_date: str | None = None
-        self._fh = None  # persistent file handle
+        self._fh: IO[str] | None = None  # persistent file handle
 
     def _prune_old_files(self) -> None:
         """Delete history files older than retention_days."""
@@ -79,12 +80,14 @@ class HistoryRecorder:
             self._prune_old_files()
             # Open new file handle
             self._fh = open(self._current_file, "a")  # noqa: SIM115
+        assert self._current_file is not None
         return self._current_file
 
-    def _ensure_fh(self):
+    def _ensure_fh(self) -> IO[str]:
         """Ensure the file handle is open and valid."""
         if self._fh is None or self._fh.closed:
             self._get_file_path()
+        assert self._fh is not None, "file handle must be open after _get_file_path"
         return self._fh
 
     def _append(self, data: dict) -> None:

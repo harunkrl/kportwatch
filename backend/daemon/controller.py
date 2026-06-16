@@ -23,7 +23,7 @@ import time
 
 # sd_notify support — graceful no-op when not running under systemd
 try:
-    from systemd.daemon import notify as _sd_notify
+    from systemd.daemon import notify as _sd_notify  # pyright: ignore[reportMissingImports]
 except ImportError:
 
     def _sd_notify(*args, **kwargs):  # type: ignore[no-redef]
@@ -164,6 +164,16 @@ class DaemonController:
 
     def _handle_sighup(self, signum, frame) -> None:
         """SIGHUP: reload config + propagate to components + reset baseline."""
+        # Components are always initialised before signal handlers fire
+        # (registered at the end of _init_components).
+        assert (
+            self.cfg is not None
+            and self.collector is not None
+            and self.notification_manager is not None
+            and self.snapshot_builder is not None
+            and self.updater is not None
+            and self.alert_engine is not None
+        ), "daemon components must be initialised before SIGHUP"
         logger.info("Received SIGHUP, reloading configuration and resetting baseline...")
         self.cfg = load_config(self.cfg.config_path)
         self.cfg = apply_cli_overrides(self.cfg, self.args)
@@ -191,6 +201,7 @@ class DaemonController:
 
     def _adaptive_interval(self, listening: list, alerts: list) -> float:
         """Compute the next poll interval based on activity."""
+        assert self.cfg is not None, "config must be initialised before polling"
         if alerts:
             return self.cfg.alert_poll_interval
 
@@ -218,6 +229,8 @@ class DaemonController:
 
     def _cleanup(self) -> None:
         """Graceful shutdown cleanup."""
+        # _cleanup is only reached after a successful _init_components().
+        assert self.cfg is not None, "config must be initialised before cleanup"
         logger.info("Shutting down — cleaning up resources")
         if self.history:
             self.history.close()
@@ -251,6 +264,15 @@ class DaemonController:
     def run(self) -> None:
         """Main daemon entry point — thin orchestrator loop."""
         self._init_components()
+        # After init every component is non-None; narrow once for the loop body.
+        assert (
+            self.cfg is not None
+            and self.collector is not None
+            and self.alert_engine is not None
+            and self.snapshot_builder is not None
+            and self.notification_manager is not None
+            and self.updater is not None
+        ), "daemon components must be initialised before run loop"
 
         while self.running:
             cycle_start = time.time()

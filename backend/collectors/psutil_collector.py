@@ -203,8 +203,8 @@ def _get_pid_info(pid: int) -> tuple[str | None, str | None, int]:
                 uid = uids.real
         except (AttributeError, TypeError):
             pass
-        result = (name, cmdline, uid)
-        _pid_info_cache[pid] = (*result, now)
+        result: tuple[str | None, str | None, int] = (name, cmdline, uid)
+        _pid_info_cache[pid] = (result[0], result[1], result[2], now)
         return result
 
     # Fallback: direct psutil.Process() call
@@ -222,7 +222,7 @@ def _get_pid_info(pid: int) -> tuple[str | None, str | None, int]:
     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
         result = (None, None, -1)
 
-    _pid_info_cache[pid] = (*result, now)
+    _pid_info_cache[pid] = (result[0], result[1], result[2], now)
     return result
 
 
