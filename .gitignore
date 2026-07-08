@@ -56,7 +56,9 @@ CONTRIBUTING.md
 .ruff_cache/
 
 # Docs / design specs (local only)
-docs/
+# Keep docs/assets/ (README screenshots); ignore everything else under docs/.
+docs/*
+!docs/assets/
 
 # pi agent artifacts (local only)
 .pi-subagents/
