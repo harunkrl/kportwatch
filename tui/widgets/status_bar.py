@@ -37,9 +37,9 @@ class StatusBar(Static):
     """Bottom status bar — responsive, adapts to terminal width.
 
     Width tiers:
-      - < 60 chars: daemon + counts only
-      - 60-100: + shortcuts (compact)
-      - > 100: full info
+      - < 60 chars:  daemon + counts only (minimal)
+      - 60-99:       + notification + filter info (medium)
+      - >= 100:      + screen indicator + shortcuts (full)
     """
 
     def __init__(self, **kwargs) -> None:

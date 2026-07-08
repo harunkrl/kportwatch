@@ -75,7 +75,7 @@ class DataCollector:
     """Collect network data from psutil or /proc, enrich, and return
     a :class:`CollectedData` snapshot each cycle.
 
-    Performance: process_iter() is cached for 5 seconds internally
+    Performance: process_iter() is cached for 10 seconds internally
     by the psutil_collector module, so full tree collection is cheap.
     """
 

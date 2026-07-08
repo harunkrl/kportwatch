@@ -1,7 +1,8 @@
 """KPortWatch TUI — Help screen.
 
-Auto-generated keyboard shortcut reference. Bindings are read
-from the app's BINDINGS list to avoid stale/duplicate entries.
+Keyboard shortcut reference and usage notes (hardcoded help text).
+Note: bindings shown here must be kept in sync with the app's BINDINGS
+by hand; this screen does not read them automatically.
 """
 
 from textual.app import ComposeResult

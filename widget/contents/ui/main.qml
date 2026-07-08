@@ -322,7 +322,9 @@ PlasmoidItem {
             }
         }
 
-        // Step 3: Reorder to match incoming sort order (O(n) with key→index map)
+        // Step 3: Reorder to match incoming sort order.
+        // Builds a key→index map (O(n)) but rebuilds it after every move,
+        // so worst case is O(n²) when many rows are out of order.
         var keyToIdx = {}
         for (var k = 0; k < model.count; k++)
             keyToIdx[itemKey(model.get(k))] = k

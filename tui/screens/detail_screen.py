@@ -25,7 +25,7 @@ from tui.utils.clipboard import safe_copy_to_clipboard
 
 
 def _format_duration(seconds: float) -> str:
-    """Ö1: Format elapsed seconds as human-readable duration."""
+    """O1: Format elapsed seconds as human-readable duration."""
     if seconds < 0:
         return "—"
     days = int(seconds // 86400)

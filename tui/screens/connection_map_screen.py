@@ -7,7 +7,7 @@ the JSON snapshot (populated by backend.parsers.geoip).
 Keyboard shortcuts:
   m     — toggle ASCII world map on/off
   /     — filter by country / IP / process
-  s     — cycle sort column
+  o     — cycle sort column
   Esc   — close screen
 """
 

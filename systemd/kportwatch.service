@@ -2,7 +2,7 @@
 #
 # Install:
 #   mkdir -p ~/.config/systemd/user
-#   cp contrib/systemd/kportwatch.service ~/.config/systemd/user/
+#   cp systemd/kportwatch.service ~/.config/systemd/user/
 #   systemctl --user daemon-reload
 #   systemctl --user enable --now kportwatch
 #

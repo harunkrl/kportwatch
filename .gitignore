@@ -55,5 +55,9 @@ CONTRIBUTING.md
 # Ruff cache
 .ruff_cache/
 
-# Design specs (local only)
-docs/superpowers/
+# Docs / design specs (local only)
+docs/
+
+# pi agent artifacts (local only)
+.pi-subagents/
+.pi/

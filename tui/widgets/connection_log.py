@@ -7,12 +7,12 @@ Uses incremental updates: only new/closed connections are logged,
 preserving scrollback history.
 
 Memory is bounded: ``max_lines`` limits the RichLog buffer and
-``_seen_keys`` is capped at ``_MAX_SEEN`` entries (LRU-style).
+``_seen_keys`` is capped at ``_MAX_SEEN`` entries (arbitrary but
+bounded eviction — see ``_trim_seen``).
 """
 
 from __future__ import annotations
 
-from collections import deque
 from datetime import datetime
 
 from backend.models import SocketEntry
@@ -47,9 +47,10 @@ _MAX_SEEN = 10_000
 class ConnectionLog(RichLog):
     """Real-time log of network connections, auto-scrolling.
 
-    Tracks seen connections by a composite key (proto+inode) and
-    only appends new arrivals or removals instead of rewriting
-    the entire log on every refresh.
+    Tracks seen connections by a composite key
+    (proto-inode-local_ip-local_port-remote_ip-remote_port) and only
+    appends new arrivals or removals instead of rewriting the entire
+    log on every refresh.
 
     Memory is bounded by ``max_lines`` (default 5000) and a cap
     on the ``_seen_keys`` set.
@@ -58,7 +59,6 @@ class ConnectionLog(RichLog):
     def __init__(self, **kwargs) -> None:
         # Limit RichLog buffer to prevent unbounded memory growth
         super().__init__(max_lines=5000, **kwargs)
-        self._seen_keys_deque: deque[str] = deque(maxlen=_MAX_SEEN)
         self._filter_text: str = ""
         self._plain_lines: list[str] = []
         self._quick_filter: str = "all"
@@ -176,7 +176,12 @@ class ConnectionLog(RichLog):
         return "\n".join(self._plain_lines)
 
     def _should_show_entry(self, e: SocketEntry) -> bool:
-        """Check if an entry passes the current quick-filter."""
+        """Check if an entry passes the current quick-filter.
+
+        Note: the "warning"/"critical" modes filter by connection *state*
+        (e.g. ESTABLISHED/SYN_*), NOT by severity tier — despite their
+        labels. Kept as-is for backward UI behaviour.
+        """
         if self._quick_filter == "all":
             return True
         if self._quick_filter == "new":
@@ -285,7 +290,11 @@ class ConnectionLog(RichLog):
         self._trim_seen()
 
     def _trim_seen(self) -> None:
-        """Trim _seen_keys if it exceeds the max size (LRU eviction)."""
+        """Trim _seen_keys if it exceeds the max size (bounded eviction).
+
+        Removes an arbitrary subset: sets are unordered, so this is NOT
+        least-recently-used — only the total size is bounded.
+        """
         if len(self._seen_keys) > _MAX_SEEN:
             excess = len(self._seen_keys) - _MAX_SEEN
             # Remove oldest keys (arbitrary but bounded)

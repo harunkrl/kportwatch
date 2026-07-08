@@ -51,9 +51,8 @@ def _write_heartbeat(path: str) -> None:
 class SnapshotBuilder:
     """Build a :class:`Snapshot` from collected data and publish it.
 
-    Performance: uses hash-based diffing to skip unnecessary JSON writes,
-    and can conditionally skip process tree serialization when no TUI
-    is connected.
+    Performance: uses hash-based diffing to skip unnecessary JSON writes
+    when the snapshot content is unchanged between cycles.
     """
 
     def __init__(self, alert_engine, history, socket_server, cfg) -> None:

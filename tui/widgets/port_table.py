@@ -291,14 +291,11 @@ class PortTable(DataTable):
                     # Update existing row cells
                     try:
                         for col_idx, val in enumerate(cell_values):
-                            self.coordinate_to_cell_key((self._find_row_index(row_key), col_idx))
-                            # Use update_cell_at for efficiency
-                            rk = self._row_key_for(row_key)
-                            if rk is not None:
-                                self.update_cell_at(
-                                    (self._find_row_index(row_key), col_idx),
-                                    val,
-                                )
+                            # update_cell_at recomputes the row index internally
+                            self.update_cell_at(
+                                (self._find_row_index(row_key), col_idx),
+                                val,
+                            )
                     except Exception:
                         # Fall back to remove + re-add
                         with contextlib.suppress(Exception):

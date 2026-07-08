@@ -1,13 +1,14 @@
 """KPortWatch — Alert engine with baseline learning.
 
 Built-in alert rules:
-  0. Port in blacklist                    → CRITICAL
-  1. Port in MALICIOUS_PORTS              → CRITICAL
-  2. Port < 1024, not known-safe, not baseline → WARNING
-  3. New listening port not in baseline   → INFO
-  4. Process with no cmdline              → WARNING
-  5. N+ new ports in one cycle            → WARNING
-  6. Custom user rules (from config)      → user-defined level
+  0.  Port in blacklist                     → CRITICAL
+  0b. Remote IP in ip_blacklist (fnmatch)   → CRITICAL
+  1.  Port in MALICIOUS_PORTS               → CRITICAL
+  2.  Port < 1024, not known-safe, not baseline → WARNING
+  3.  New listening port not in baseline    → INFO
+  4.  Process with no cmdline               → WARNING
+  5.  N+ new ports in one cycle             → WARNING
+  6.  Custom user rules (from config)       → user-defined level
 """
 
 from __future__ import annotations

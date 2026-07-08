@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """KPortWatch — Main backend daemon.
 
-Gathers network socket data from /proc, runs alert analysis,
-and writes JSON snapshots for the Plasma widget and TUI.
+Entry point: delegates to DaemonController, which gathers network
+socket data (preferring psutil, with /proc as a fallback), runs alert
+analysis, and writes JSON snapshots for the Plasma widget and TUI.
 
 Usage:
     python3 kportwatch-daemon.py --foreground --verbose

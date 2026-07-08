@@ -179,7 +179,7 @@ def perform_update(restart_daemon: bool = True) -> bool:
         logger.error("git pull error: %s", e)
         return False
 
-    # 2. pip install -e .
+    # 3. pip install -e .
     try:
         venv_python = os.path.join(project_dir, ".venv", "bin", "python")
         if not os.path.exists(venv_python):
@@ -200,7 +200,7 @@ def perform_update(restart_daemon: bool = True) -> bool:
         logger.error("pip install error: %s", e)
         return False
 
-    # 3. Restart daemon
+    # 4. Restart daemon
     if restart_daemon:
         _restart_daemon()
 

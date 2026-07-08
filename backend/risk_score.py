@@ -1,8 +1,7 @@
 """KPortWatch — Port risk scoring.
 
 Calculates a 0-100 risk score for each listening port based on
-multiple threat indicators.
-multiple factors.  Higher score = more dangerous.
+multiple threat indicators.  Higher score = more dangerous.
 
 Factors (additive):
   +80   Port is in malicious_ports
@@ -18,7 +17,7 @@ Usage::
 
     from backend.risk_score import calculate_risk_score
 
-    score = calculate_risk_score(entry, engine)
+    score = calculate_risk_score(entry)
     # score = {"score": 45, "factors": ["privileged", "not_baseline"]}
 """
 

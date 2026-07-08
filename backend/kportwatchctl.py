@@ -6,6 +6,7 @@ Subcommands:
     restart   Restart the daemon
     stop      Stop the daemon
     reload    Reload config (SIGHUP)
+    kill      Force-kill the daemon (SIGKILL)
 """
 
 from __future__ import annotations
